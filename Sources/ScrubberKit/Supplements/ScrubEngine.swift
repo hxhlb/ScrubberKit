@@ -145,7 +145,6 @@ public enum ScrubEngine: String, CaseIterable, Codable {
         switch self {
         case .google:
             try? body.select("#rso").forEach { object in
-
                 let elements = object.children()
 
                 for element in elements {
@@ -296,7 +295,6 @@ public enum ScrubEngine: String, CaseIterable, Codable {
         var snippets: [SearchSnippet] = parse(body: body)
         if snippets.isEmpty {
             try? body.select("a[href]").array().forEach { element in
-
                 let link = extractLink(element)
 
                 guard let link else {

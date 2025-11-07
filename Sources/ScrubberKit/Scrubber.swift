@@ -152,6 +152,7 @@ public class Scrubber {
             guard let result,
                   let content = Self.finalize(
                       document: result.document,
+                      markdownDocument: result.markdownDocument,
                       engine: engine,
                       url: result.url
                   )
@@ -214,7 +215,12 @@ public extension Scrubber {
             _ = box
             box = nil
             DispatchQueue.global().async {
-                let doc = finalize(document: result.document, engine: nil, url: result.url)
+                let doc = finalize(
+                    document: result.document,
+                    markdownDocument: result.markdownDocument,
+                    engine: nil,
+                    url: result.url
+                )
                 completion(doc)
             }
         }
@@ -263,7 +269,6 @@ extension Scrubber {
 
             for (engine, snippets) in groupedSnippets {
                 self.dispatchGroup.enterBackground { leaver in
-
                     let searchResults = snippets.map(\.url)
 
                     self.progress.update(

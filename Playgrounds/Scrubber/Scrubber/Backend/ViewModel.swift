@@ -144,9 +144,9 @@ class ViewModel: ObservableObject, Identifiable {
                 .sanitizedFileName
             let url = baseDir
                 .appendingPathComponent(fileName)
-                .appendingPathExtension("txt")
+                .appendingPathExtension("md")
 
-            let text = document.textDocument
+            let text = document.markdownDocument
             try? text.write(to: url, atomically: true, encoding: .utf8)
         }
     }

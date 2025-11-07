@@ -62,7 +62,7 @@ class BM25Okapi {
 
                 let idf = calculateIDF(token: token)
 
-                let tf = document.filter { $0 == token }.count
+                let tf = document.count(where: { $0 == token })
 
                 let docLength = Double(docLengths[docIndex])
                 let numerator = Double(tf) * (k1 + 1)

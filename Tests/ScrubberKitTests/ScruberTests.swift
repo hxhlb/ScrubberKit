@@ -2,7 +2,7 @@ import Foundation
 @testable @preconcurrency import ScrubberKit
 import Testing
 
-@Test func testSearch() async throws {
+@Test func search() async throws {
     await withCheckedContinuation { continuation in
         let scrubber = Scrubber(query: "Asspp")
         DispatchQueue.main.async {

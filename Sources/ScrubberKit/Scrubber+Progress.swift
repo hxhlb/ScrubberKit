@@ -26,12 +26,12 @@ public extension Scrubber {
         }
 
         public var engineStatusCompletedCount: Int {
-            engineStatus.values.filter { status in
+            engineStatus.values.count(where: { status in
                 switch status {
                 case .fetching: false
                 case .completed: true
                 }
-            }.count
+            })
         }
 
         public var allEngineReturnsValue: Bool {
@@ -48,23 +48,23 @@ public extension Scrubber {
         }
 
         public var fetchingStatusCount: Int {
-            fetchedStatus.values.filter { status in
+            fetchedStatus.values.count(where: { status in
                 switch status {
                 case .pending: false
                 case .fetching: true
                 case .completed: false
                 }
-            }.count
+            })
         }
 
         public var fetchedStatusCompletedCount: Int {
-            fetchedStatus.values.filter { status in
+            fetchedStatus.values.count(where: { status in
                 switch status {
                 case .pending: false
                 case .fetching: false
                 case .completed: true
                 }
-            }.count
+            })
         }
 
         public let updatePublisher: PassthroughSubject<Progress, Never> = .init()

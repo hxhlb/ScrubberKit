@@ -56,6 +56,7 @@ class ScrubWorker: NSObject, WKNavigationDelegate, WKUIDelegate {
     struct ScrubResult {
         let url: URL
         let document: String
+        let markdownDocument: String
     }
 
     private var completion: ((ScrubResult) -> Void)?
@@ -130,8 +131,17 @@ class ScrubWorker: NSObject, WKNavigationDelegate, WKUIDelegate {
     private func performCompletion() {
         guard let completion else { return }
         self.completion = nil
+        
+        let web = web
+        
         web.evaluateJavaScript("document.documentElement.outerHTML") { data, _ in
-            completion(.init(url: self.web.url ?? self.baseUrl, document: data as? String ?? ""))
+            web.captureMarkdownContent { markdown in
+                completion(.init(
+                    url: self.web.url ?? self.baseUrl,
+                    document: data as? String ?? "",
+                    markdownDocument: markdown
+                ))
+            }
         }
     }
 }
@@ -157,7 +167,13 @@ private extension ScrubWorker {
             } else {
                 assertionFailure("accessControlRule is nil, please call setup at boot")
             }
-            super.init(frame: .init(x: 0, y: 0, width: 800, height: 3200), configuration: config)
+            Turndown.setupScripts.forEach { script in
+                config.userContentController.addUserScript(script)
+            }
+            super.init(
+                frame: .init(x: 0, y: 0, width: 800, height: 3200),
+                configuration: config
+            )
         }
 
         @available(*, unavailable)

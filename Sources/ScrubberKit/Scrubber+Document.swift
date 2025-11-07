@@ -14,10 +14,11 @@ extension Scrubber {
         public let url: URL
         public let document: String
         public let textDocument: String
+        public let markdownDocument: String
         public let engine: ScrubEngine?
     }
 
-    static func finalize(document: String, engine: ScrubEngine? = nil, url: URL) -> Document? {
+    static func finalize(document: String, markdownDocument: String, engine: ScrubEngine? = nil, url: URL) -> Document? {
         assert(!Thread.isMainThread)
         guard let soup = try? SwiftSoup.parse(document) else {
             return nil
@@ -47,6 +48,7 @@ extension Scrubber {
             url: newURL,
             document: document,
             textDocument: textDocument,
+            markdownDocument: markdownDocument,
             engine: engine
         )
     }
