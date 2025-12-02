@@ -101,7 +101,7 @@ public class Scrubber {
 
     private func search() {
         assert(Thread.isMainThread)
-        for engine in ScrubEngine.allCases {
+        for engine in enabledEngines {
             progress.update(engine: engine, status: .fetching)
             guard let query = engine.makeSearchQueryRequest(query) else {
                 progress.update(engine: engine, status: .completed(result: 0))
@@ -237,7 +237,7 @@ extension Scrubber {
         let searchGroup = DispatchGroup()
         var searchSnippets: [SearchSnippet] = []
 
-        for engine in ScrubEngine.allCases {
+        for engine in enabledEngines {
             progress.update(engine: engine, status: .fetching)
             guard let query = engine.makeSearchQueryRequest(query)
             else {
@@ -283,12 +283,21 @@ extension Scrubber {
                 }
             }
 
-            let missingEngines = Set(ScrubEngine.allCases).subtracting(groupedSnippets.keys)
+            let missingEngines = Set(self.enabledEngines).subtracting(groupedSnippets.keys)
             for engine in missingEngines {
                 self.progress.update(engine: engine, status: .completed(result: 0))
             }
 
             leaver()
+        }
+    }
+}
+
+fileprivate extension Scrubber {
+    var enabledEngines: [ScrubEngine] {
+        let disabledEngines = ScrubberConfiguration.disabledEngines
+        return ScrubEngine.allCases.filter { engine in
+            !disabledEngines.contains(engine)
         }
     }
 }
